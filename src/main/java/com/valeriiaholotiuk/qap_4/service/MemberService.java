@@ -1,5 +1,6 @@
 package com.valeriiaholotiuk.qap_4.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ public class MemberService {
 
     public Member createMember(Member member) {
         if (memberRepository.existsByEmail(member.getEmail())) {
-            throw new RuntimeException("Member with email already exists");
+            throw new IllegalArgumentException("Member with email already exists: " + member.getEmail());
         }
         return memberRepository.save(member);
     }
@@ -29,6 +30,20 @@ public class MemberService {
 
     public Member getMemberById(Long id) {
         return memberRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Member not found"));
+                .orElseThrow(() -> new RuntimeException("Member not found with id: " + id));
+    }
+
+    public List<Member> searchMembers(String name, String phone, LocalDate startDate) {
+        if (name != null && !name.isBlank()) {
+            return memberRepository.findByNameContainingIgnoreCase(name);
+        }
+        if (phone != null && !phone.isBlank()) {
+            return memberRepository.findByPhoneNumber(phone);
+        }
+        if (startDate != null) {
+            return memberRepository.findByMembershipStartDate(startDate);
+        }
+
+        return memberRepository.findAll();
     }
 }

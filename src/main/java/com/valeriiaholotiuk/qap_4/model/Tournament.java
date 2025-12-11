@@ -1,5 +1,6 @@
 package com.valeriiaholotiuk.qap_4.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
@@ -21,9 +22,13 @@ public class Tournament {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    private LocalDate startDate;
+    private LocalDate endDate;
+
     private String location;
-    private LocalDate date;
+
+    private BigDecimal entryFee;
+    private BigDecimal cashPrizeAmount;
 
     @ManyToMany
     @JoinTable(
@@ -31,58 +36,43 @@ public class Tournament {
             joinColumns = @JoinColumn(name = "tournament_id"),
             inverseJoinColumns = @JoinColumn(name = "member_id")
     )
-    private Set<Member> members = new HashSet<>();
+    private Set<Member> participatingMembers = new HashSet<>();
 
-    public Tournament() {
-    }
+    public Tournament() {}
 
-    public Tournament(String name, String location, LocalDate date) {
-        this.name = name;
+    public Tournament(LocalDate startDate, LocalDate endDate, String location,
+                      BigDecimal entryFee, BigDecimal cashPrizeAmount) {
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.location = location;
-        this.date = date;
+        this.entryFee = entryFee;
+        this.cashPrizeAmount = cashPrizeAmount;
     }
+
 
     public void addMember(Member member) {
-        this.members.add(member);
+        this.participatingMembers.add(member);
     }
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public LocalDate getStartDate() { return startDate; }
+    public void setStartDate(LocalDate startDate) { this.startDate = startDate; }
 
-    public String getName() {
-        return name;
-    }
+    public LocalDate getEndDate() { return endDate; }
+    public void setEndDate(LocalDate endDate) { this.endDate = endDate; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public String getLocation() { return location; }
+    public void setLocation(String location) { this.location = location; }
 
-    public String getLocation() {
-        return location;
-    }
+    public BigDecimal getEntryFee() { return entryFee; }
+    public void setEntryFee(BigDecimal entryFee) { this.entryFee = entryFee; }
 
-    public void setLocation(String location) {
-        this.location = location;
-    }
+    public BigDecimal getCashPrizeAmount() { return cashPrizeAmount; }
+    public void setCashPrizeAmount(BigDecimal cashPrizeAmount) { this.cashPrizeAmount = cashPrizeAmount; }
 
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public Set<Member> getMembers() {
-        return members;
-    }
-
-    public void setMembers(Set<Member> members) {
-        this.members = members;
+    public Set<Member> getParticipatingMembers() { return participatingMembers; }
+    public void setParticipatingMembers(Set<Member> participatingMembers) {
+        this.participatingMembers = participatingMembers;
     }
 }

@@ -1,14 +1,12 @@
 package com.valeriiaholotiuk.qap_4.controllers;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.valeriiaholotiuk.qap_4.model.Tournament;
 import com.valeriiaholotiuk.qap_4.service.TournamentService;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/tournaments")
@@ -26,7 +24,7 @@ public class TournamentController {
     }
 
     @GetMapping
-    public Iterable<Tournament> getAllTournaments() {
+    public List<Tournament> getAllTournaments() {
         return tournamentService.getAllTournaments();
     }
 
@@ -41,5 +39,15 @@ public class TournamentController {
             @PathVariable Long memberId
     ) {
         return tournamentService.registerMember(tournamentId, memberId);
+    }
+
+
+    @GetMapping("/search")
+    public List<Tournament> searchTournaments(
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) String location
+    ) {
+        return tournamentService.searchTournaments(startDate, location);
     }
 }

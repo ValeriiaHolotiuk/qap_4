@@ -1,5 +1,6 @@
 package com.valeriiaholotiuk.qap_4.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -31,16 +32,29 @@ public class TournamentService {
 
     public Tournament getTournamentById(Long id) {
         return tournamentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Tournament not found"));
+                .orElseThrow(() -> new RuntimeException("Tournament not found with id: " + id));
     }
 
     public Tournament registerMember(Long tournamentId, Long memberId) {
-        Tournament tournament = getTournamentById(tournamentId);
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new RuntimeException("Member not found"));
+        Tournament tournament = tournamentRepository.findById(tournamentId)
+                .orElseThrow(() -> new RuntimeException("Tournament not found with id: " + tournamentId));
 
-        tournament.getMembers().add(member);
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new RuntimeException("Member not found with id: " + memberId));
+
+        tournament.addMember(member);  
         return tournamentRepository.save(tournament);
+    }
+
+c    public List<Tournament> searchTournaments(LocalDate startDate, String location) {
+        if (startDate != null) {
+            return tournamentRepository.findByStartDate(startDate);
+        }
+        if (location != null && !location.isBlank()) {
+            return tournamentRepository.findByLocationContainingIgnoreCase(location);
+        }
+
+        return tournamentRepository.findAll();
     }
 }
 

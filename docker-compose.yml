@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16
+    container_name: golfclub-db
+    restart: always
+    environment:
+      POSTGRES_DB: golfclubdb
+      POSTGRES_USER: golfuser
+      POSTGRES_PASSWORD: golfpass
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: golfclub-api
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/golfclubdb
+      SPRING_DATASOURCE_USERNAME: golfuser
+      SPRING_DATASOURCE_PASSWORD: golfpass
+    ports:
+      - "8080:8080"
+
+volumes:
+  pgdata:
